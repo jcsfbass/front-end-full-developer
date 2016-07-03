@@ -1,0 +1,12 @@
+{
+  "name": "jedi",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "private": true,
+  "author": "Carlos Souza",
+  "dependencies": {
+    "express": "~4.14.0"
+  }
+}
