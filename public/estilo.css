@@ -6,9 +6,7 @@
 
 main {
 	width: 518px;
-	position: absolute;
-	top: 60px;
-	right: 18px;
+	margin: 60px 18px;
 	border: 10px solid rgb(0,0,0);
 }
 
