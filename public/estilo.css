@@ -40,6 +40,7 @@ input {
 	padding-left: 10px;
 	border: none;
 	outline: none;
+	border-radius: 3px;
 	background-color: #f1f1f1;
 	color: #474747;
 	font-size: 18px;
@@ -52,6 +53,7 @@ button {
 	border: none;
 	border-bottom: 4px solid #0561be;
 	outline: none;
+	border-radius: 2px;
 	background-color: #0084ff;
 	color: #fff;
 	font-size: 16px;
