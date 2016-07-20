@@ -1,3 +1,8 @@
+@font-face {
+  font-family: 'Ubuntu';
+  src: local('Ubuntu'), url('ubuntu.woff2') format('woff2');
+}
+
 * {
 	margin: 0;
 	padding: 0;
@@ -5,8 +10,9 @@
 }
 
 body {
-	background-image: url("images/manypeople.jpg");
+	background-image: url('images/manypeople.jpg');
 	background-repeat: repeat;
+	font-family: 'Ubuntu', sans-serif;
 }
 
 main {
