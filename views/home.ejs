@@ -6,7 +6,15 @@
 		<link rel="stylesheet" type="text/css" href="estilo.css">
 	</head>
 	<body>
-		<h1><%= id %></h1>
+		<header>
+			<h1><%= nome %></h1>
+			<a href="/logout"><button type="button">Sair</button></a>
+		</header>
+
+		<form method="post" action="/postagem">
+			<textarea name="texto"></textarea>
+			<button type="submit">Post</button>
+		</form>
 
 		<script src="script.js" type="text/javascript"></script>
 	</body>
