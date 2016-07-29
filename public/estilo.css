@@ -10,12 +10,26 @@
 }
 
 body {
-	background-image: url('images/manypeople.jpg');
-	background-repeat: repeat;
 	font-family: 'Ubuntu', sans-serif;
 }
 
-section {
+form button {
+	margin: 15px 0 40px 0;
+	border: none;
+	border-bottom: 4px solid #0561be;
+	outline: none;
+	border-radius: 2px;
+	background-color: #0084ff;
+	color: #fff;
+	font-size: 16px;
+}
+
+body#cadastro-login {
+	background-image: url('images/manypeople.jpg');
+	background-repeat: repeat;
+}
+
+#cadastro-login section {
 	width: 465px;
 	margin: 60px 18px;
 	display: inline-block;
@@ -23,26 +37,7 @@ section {
 	border: 10px solid rgba(0,0,0,0.5);
 }
 
-header {
-	height: 80px;
-	background-color: #b3de1d;
-}
-
-header h1, header a {
-	display: inline-block;
-}
-
-textarea {
-	width: 100%;
-	height: 150px;
-}
-
-header a {
-	width: 100px;
-	float: right;
-}
-
-h1 {
+#cadastro-login h1 {
 	padding: 15px 30px;
 	background-color: #b3de1d;
 	color: #2a2a2a;
@@ -50,23 +45,23 @@ h1 {
 	font-weight: 500;
 }
 
-form {
+#cadastro-login form {
 	padding: 30px 30px 0 30px;
 	background-color: #fff;
 }
 
-label, input {
+#cadastro-login label, #cadastro-login input {
 	display: block;
 }
 
-label {
+#cadastro-login label {
 	margin-bottom: 5px;
 	color: #474747;
 	font-size: 18px;
 	font-weight: bold;
 }
 
-input {
+#cadastro-login input {
 	width: 100%;
 	height: 50px;
 	margin-bottom: 15px;
@@ -79,7 +74,7 @@ input {
 	font-size: 18px;
 }
 
-button {
+#cadastro-login button {
 	width: 100%;
 	margin: 15px 0 40px 0;
 	padding: 14px 0;
@@ -90,4 +85,90 @@ button {
 	background-color: #0084ff;
 	color: #fff;
 	font-size: 16px;
+}
+
+#home section {
+	height: 333px;
+	padding: 80px 35px 0 35px;
+	position: relative;
+	background: linear-gradient(rgba(36,9,71,0.72), rgba(36,9,71,0.72)), url('images/points.jpg');
+	background-attachment: fixed;
+}
+
+#home h1 {
+	font-size: 48px;
+	font-weight: 300;
+	color: #b3de1d;
+}
+
+#home img {
+	width: 256px;
+	height: 256px;
+	position: absolute;
+  bottom: -128px;
+	border-radius: 5px;
+}
+
+#home a {
+	position: absolute;
+  top: 205px;
+  right: 35px;
+}
+
+#home a button {
+	width: 132px;
+	height: 50px;
+	border: none;
+	border-radius: 5px;
+	outline: none;
+	background-color: #b3de1d;
+	font-size: 16px;
+	color: #000;
+	cursor: pointer;
+	transition: 0.3s linear;
+}
+
+#home a button:hover {
+	background-color: #fff;
+}
+
+#home main {
+	padding: 0 35px;
+}
+
+#home h2 {
+	margin: 140px 0 25px 0;
+	padding-bottom: 20px;
+	border-bottom: 4px solid #b3de1d;
+	font-size: 28px;
+	color: #363b51;
+}
+
+#home form {
+	margin-bottom: 35px;
+}
+
+#home label {
+	display: block;
+	margin-bottom: 15px;
+	font-size: 18px;
+	font-weight: 500;
+	color: #474747;
+}
+
+#home textarea {
+	width: 100%;
+	height: 80px;
+	padding: 14px 15px;
+	border-radius: 4px;
+	border: none;
+	outline: none;
+	background-color: #f1f1f1;
+	font-size: 18px;
+	resize: none;
+}
+
+#home form button {
+	width: 100px;
+	padding: 7px 0;
 }
