@@ -20,7 +20,16 @@
 				<textarea name="texto" id="texto" placeholder="Como você está se sentindo?"></textarea>
 				<button type="submit">Post</button>
 			</form>
+
+			<section id="postagens">
+				<div v-for="postagem in postagens">
+					<p>{{ postagem.texto }}</p>
+				</div>
+			</section>
 		</main>
+
+		<script src="js/vue.min.js" type="text/javascript"></script>
+		<script src="js/vue-resource.min.js" type="text/javascript"></script>
 		<script src="script.js" type="text/javascript"></script>
 	</body>
 </html>
