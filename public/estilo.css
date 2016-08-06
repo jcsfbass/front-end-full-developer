@@ -101,7 +101,7 @@ body#cadastro-login {
 	color: #b3de1d;
 }
 
-#home img {
+#home section:first-child img {
 	width: 256px;
 	height: 256px;
 	position: absolute;
@@ -171,4 +171,36 @@ body#cadastro-login {
 #home form button {
 	width: 100px;
 	padding: 7px 0;
+}
+
+#home #postagens img {
+	width: 55px;
+	height: 55px;
+	border-radius: 3px;
+}
+
+#home #postagens h3 {
+	padding: 0 15px;
+	display: inline-block;
+	vertical-align: top;
+	line-height: 20px;
+	font-size: 16px;
+	font-weight: 500;
+	color: #222339;
+}
+
+#home #postagens time {
+	font-size: 16px;
+	font-weight: 300;
+	color: #8d8d8d;
+}
+
+#home #postagens p {
+	margin: 20px 0 50px 0;
+	padding: 20px 0 0 0;
+	border-top: 1px solid #b3de1d;
+	font-size: 18px;
+	font-weight: 300;
+	color: #8d8d8d;
+	word-wrap: break-word;
 }
