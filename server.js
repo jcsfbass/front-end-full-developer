@@ -1,7 +1,9 @@
 const express = require('express');
 const app = express();
 const path = require('path');
+const fs = require('fs');
 const bodyParser = require('body-parser');
+const multiparty = require('connect-multiparty');
 const session = require('express-session');
 const mongodb = require('mongodb');
 const mongoClient = mongodb.MongoClient;
@@ -21,6 +23,7 @@ app.use(session({
 }));
 
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
 	if (req.session.user) {
@@ -28,7 +31,10 @@ app.get('/', (req, res) => {
 			const usuarios = db.collection('usuarios');
 			usuarios.find({'_id': new ObjectId(req.session.user.id)}).toArray((err, docs) => {
 				db.close();
-				res.render('home', {nome: docs[0].nome});
+				res.render('home', {
+					nome: docs[0].nome,
+					imagem: `images/profile/${docs[0]._id}.jpg`
+				});
 			});
 		});
 	} else {
@@ -63,7 +69,7 @@ app.get('/logout', (req, res) => {
 	res.redirect('/');
 });
 
-app.post('/cadastrar', (req, res) => {
+app.post('/cadastrar', multiparty(), (req, res) => {
 	mongoClient.connect(MONGODB_URI, (err, db) => {
 		const usuarios = db.collection('usuarios');
 
@@ -74,25 +80,33 @@ app.post('/cadastrar', (req, res) => {
 			db.close();
 
 			req.session.user = {id: result.ops[0]._id};
+
+			fs.readFile(req.files.foto.path, (err, data) => {
+				fs.writeFile(path.join(__dirname, `public/images/profile/${req.session.user.id}.jpg`), data);
+			});
+
 			res.redirect('/');
 		});
 	});
 });
 
-app.post('/postagem', (req, res) => {
+app.post('/postagens', (req, res) => {
 	mongoClient.connect(MONGODB_URI, (err, db) => {
 		const usuarios = db.collection('usuarios');
 		usuarios.find({'_id': new ObjectId(req.session.user.id)}).toArray((err, docs) => {
 			const posts = docs[0].posts;
-			posts.push({
-				texto: req.body.texto
-			});
+			const post = {
+				texto: req.body.texto,
+				data: new Date()
+			};
+
+			posts.unshift(post);
 
 			usuarios.updateOne({'_id': new ObjectId(docs[0]._id)},
 			{$set: {'posts': posts}}, (err, results) => {
 				db.close();
 
-				res.redirect('/');
+				res.json(post);
 			});
 		});
 	});
@@ -106,6 +120,21 @@ app.get('/postagens', (req, res) => {
 				db.close();
 
 				res.json(docs[0].posts);
+			});
+		});
+	} else {
+		res.json([]);
+	}
+});
+
+app.get('/pessoas', (req, res) => {
+	if (req.session.user) {
+		mongoClient.connect(MONGODB_URI, (err, db) => {
+			const usuarios = db.collection('usuarios');
+			usuarios.find({}).toArray((err, docs) => {
+				db.close();
+
+				res.json(docs);
 			});
 		});
 	} else {

@@ -19,13 +19,15 @@
 
 		<section>
 			<h1>Cadastro</h1>
-			<form method="post" action="/cadastrar">
+			<form method="post" action="/cadastrar" enctype="multipart/form-data">
 				<label for="nome">Nome:</label>
 				<input type="text" name="nome" id="nome" placeholder="Nome" required>
 				<label for="email">Email:</label>
 				<input type="email" name="email" id="email" placeholder="nome@dominio.com" required>
 				<label for="senha">Senha:</label>
 				<input type="password" name="senha" id="senha" placeholder="senha" required>
+				<label for="foto">Foto do perfil:</label>
+				<input type="file" name="foto" id="foto" required>
 				<button type="submit">Cadastrar</button>
 			</form>
 		</section>

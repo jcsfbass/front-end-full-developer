@@ -6,9 +6,9 @@
 		<link rel="stylesheet" type="text/css" href="estilo.css">
 	</head>
 	<body id="home">
-		<section>
+		<section id="info">
 			<h1><%= nome %></h1>
-			<img src="images/i.jpg" alt="imagem do perfil">
+			<img src="<%= imagem %>" alt="imagem do perfil">
 			<a href="/logout"><button type="button">Sair</button></a>
 		</section>
 
@@ -17,17 +17,25 @@
 
 			<form method="post" action="/postagem">
 				<label for="texto">Escreva um novo:</label>
-				<textarea name="texto" id="texto" placeholder="Como você está se sentindo?"></textarea>
-				<button type="submit">Post</button>
+				<textarea v-model="texto" name="texto" id="texto" placeholder="Como você está se sentindo?"></textarea>
+				<button type="button" v-on:click="post">Post</button>
 			</form>
+
+			<section id="pessoas">
+				<div v-for="pessoa in pessoas">
+					<img src="<%= imagem %>" alt="imagem do perfil">
+					<p>{{ pessoa.nome }}</p>
+					<a href="/solicitar/{{ pessoa._id }}"><button type="button">Solicitar amizade</button></a>
+				</div>
+			</section>
 
 			<section id="postagens">
 				<div v-for="postagem in postagens">
-					<img src="images/i.jpg" alt="imagem do perfil">
+					<img src="<%= imagem %>" alt="imagem do perfil">
 					<h3>
 						<%= nome %>
 						<br>
-						<time datetime="2011-01-12">2011-01-12</time>
+						<time datetime="{{ postagem.data }}">{{ postagem.data }}</time>
 					</h3>
 					<p>{{ postagem.texto }}</p>
 				</div>
@@ -36,6 +44,6 @@
 
 		<script src="js/vue.min.js" type="text/javascript"></script>
 		<script src="js/vue-resource.min.js" type="text/javascript"></script>
-		<script src="script.js" type="text/javascript"></script>
+		<script src="home.js" type="text/javascript"></script>
 	</body>
 </html>
