@@ -12,6 +12,33 @@
 			<a href="/logout"><button type="button">Sair</button></a>
 		</section>
 
+		<aside>
+			<div>
+				<h2>Amigos</h2>
+				<div v-for="pessoa in pessoas">
+					<img src="<%= imagem %>" alt="imagem do perfil">
+					<p>{{ pessoa.nome }}</p>
+					<br>
+					<a href="/solicitar/{{ pessoa._id }}">
+						<button type="button" class="azul">Conversar</button>
+					</a>
+				</div>
+			</div>
+
+			<div>
+				<h2>Não amigos</h2>
+				<div v-for="pessoa in pessoas">
+					<img src="<%= imagem %>" alt="imagem do perfil">
+					<p>{{ pessoa.nome }}</p>
+					<br>
+					<a href="/solicitar/{{ pessoa._id }}">
+						<button type="button" class="azul">Adicionar</button>
+					</a>
+				</div>
+			</div>
+	
+		</aside>
+
 		<main>
 			<h2>Postagens</h2>
 
@@ -20,14 +47,6 @@
 				<textarea v-model="texto" name="texto" id="texto" placeholder="Como você está se sentindo?"></textarea>
 				<button type="button" v-on:click="post">Post</button>
 			</form>
-
-			<section id="pessoas">
-				<div v-for="pessoa in pessoas">
-					<img src="<%= imagem %>" alt="imagem do perfil">
-					<p>{{ pessoa.nome }}</p>
-					<a href="/solicitar/{{ pessoa._id }}"><button type="button">Solicitar amizade</button></a>
-				</div>
-			</section>
 
 			<section id="postagens">
 				<div v-for="postagem in postagens">

@@ -13,7 +13,7 @@ body {
 	font-family: 'Ubuntu', sans-serif;
 }
 
-form button {
+form button, button.azul {
 	margin: 15px 0 40px 0;
 	border: none;
 	border-bottom: 4px solid #0561be;
@@ -22,6 +22,7 @@ form button {
 	background-color: #0084ff;
 	color: #fff;
 	font-size: 16px;
+	cursor: pointer;
 }
 
 body#cadastro-login {
@@ -89,6 +90,7 @@ body#cadastro-login {
 
 #home section#info {
 	height: 333px;
+	margin-bottom: 140px;
 	padding: 80px 35px 0 35px;
 	position: relative;
 	background: linear-gradient(rgba(36,9,71,0.72), rgba(36,9,71,0.72)), url('images/points.jpg');
@@ -115,7 +117,7 @@ body#cadastro-login {
   right: 35px;
 }
 
-#home a button {
+#home section#info a button {
 	width: 132px;
 	height: 50px;
 	border: none;
@@ -128,16 +130,18 @@ body#cadastro-login {
 	transition: 0.3s linear;
 }
 
-#home a button:hover {
+#home section#info a button:hover {
 	background-color: #fff;
 }
 
 #home main {
+	width: 79%;
 	padding: 0 35px;
+	display: inline-block;
 }
 
 #home h2 {
-	margin: 140px 0 25px 0;
+	margin: 0 0 25px 0;
 	padding-bottom: 20px;
 	border-bottom: 4px solid #b3de1d;
 	font-size: 28px;
@@ -205,7 +209,36 @@ body#cadastro-login {
 	word-wrap: break-word;
 }
 
-#home #pessoas img {
-	width: 20px;
-	height: 20px;
+#home aside {
+	width: 20%;
+	padding-left: 35px;
+	display: inline-block;
+	vertical-align: top;
+}
+
+#home aside img {
+	width: 50px;
+	height: 50px;
+	margin-right: 8px;
+	float: left;
+}
+
+#home aside div {
+	margin-bottom: 15px;
+}
+
+#home aside div:nth-child(2) {
+	margin-top: 25px;
+}
+
+#home aside p {
+	display: inline;
+	vertical-align: top;
+}
+
+#home aside button {
+	width: 100px;
+	height: 31px;
+	margin: 0;
+	padding: 7px 0;
 }
