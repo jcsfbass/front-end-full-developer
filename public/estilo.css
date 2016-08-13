@@ -142,7 +142,7 @@ body#cadastro-login {
 
 #home h2 {
 	margin: 0 0 25px 0;
-	padding-bottom: 20px;
+	padding-bottom: 10px;
 	border-bottom: 4px solid #b3de1d;
 	font-size: 28px;
 	color: #363b51;
@@ -224,11 +224,11 @@ body#cadastro-login {
 }
 
 #home aside div {
-	margin-bottom: 15px;
+	margin: 25px 0 15px 0;
 }
 
-#home aside div:nth-child(2) {
-	margin-top: 25px;
+#home aside div:first-child {
+	margin-top: 0;
 }
 
 #home aside p {

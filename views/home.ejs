@@ -15,11 +15,11 @@
 		<aside>
 			<div>
 				<h2>Amigos</h2>
-				<div v-for="pessoa in pessoas">
-					<img src="<%= imagem %>" alt="imagem do perfil">
-					<p>{{ pessoa.nome }}</p>
+				<div v-for="amigo in amigos">
+					<img src="images/profile/{{ amigo._id }}.jpg" alt="imagem do perfil">
+					<p>{{ amigo.nome }}</p>
 					<br>
-					<a href="/solicitar/{{ pessoa._id }}">
+					<a href="/solicitar/{{ amigo._id }}">
 						<button type="button" class="azul">Conversar</button>
 					</a>
 				</div>
@@ -28,15 +28,29 @@
 			<div>
 				<h2>Não amigos</h2>
 				<div v-for="pessoa in pessoas">
-					<img src="<%= imagem %>" alt="imagem do perfil">
+					<img src="images/profile/{{ pessoa._id }}.jpg" alt="imagem do perfil">
 					<p>{{ pessoa.nome }}</p>
 					<br>
-					<a href="/solicitar/{{ pessoa._id }}">
-						<button type="button" class="azul">Adicionar</button>
-					</a>
+					<!--<a href="/solicitar/{{ pessoa._id }}">-->
+						<button type="button" v-on:click="solicitar({{ pessoa }})" class="azul">
+							Adicionar
+						</button>
+					<!--</a>-->
 				</div>
 			</div>
 	
+			<div>
+				<h2>Solicitações</h2>
+				<div v-for="solicitacao in solicitacoes">
+					<img src="images/profile/{{ solicitacao._id }}.jpg" alt="imagem do perfil">
+					<p>{{ solicitacao.nome }}</p>
+					<br>
+					<a href="/solicitar/{{ solicitacao._id }}">
+						<button type="button" class="azul">Aceitar</button>
+					</a>
+				</div>
+			</div>
+
 		</aside>
 
 		<main>

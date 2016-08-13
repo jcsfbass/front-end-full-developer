@@ -134,9 +134,33 @@ app.get('/pessoas', (req, res) => {
 			usuarios.find({}).toArray((err, docs) => {
 				db.close();
 
-				res.json(docs);
+				res.json(docs.filter(function(doc){
+					return doc._id != req.session.user.id;
+				}));
 			});
 		});
+	} else {
+		res.json([]);
+	}
+});
+
+app.get('/solicitar/:id', function(req, res) {
+	if (req.session.user) {
+		mongoClient.connect(MONGODB_URI, (err, db) => {
+			const usuarios = db.collection('usuarios');
+			usuarios.find({'_id': new ObjectId(req.params.id)}).toArray((err, docs) => {
+				let solicitacoes = docs[0].solicitacoes;
+				if (!solicitacoes) solicitacoes = []; 
+				solicitacoes.push(req.session.user.id);
+
+				usuarios.updateOne({'_id': new ObjectId(docs[0]._id)},
+				{$set: {'solicitacoes': solicitacoes}}, (err, results) => {
+					db.close();
+
+					res.json(solicitacoes);
+				});
+			});
+		});	
 	} else {
 		res.json([]);
 	}
