@@ -166,4 +166,69 @@ app.get('/solicitar/:id', function(req, res) {
 	}
 });
 
+app.get('/solicitacoes', function(req, res) {
+	if (req.session.user) {
+		mongoClient.connect(MONGODB_URI, (err, db) => {
+			const usuarios = db.collection('usuarios');
+			usuarios.find({'_id': new ObjectId(req.session.user.id)}).toArray((err, docs) => {
+				let solicitacoes = docs[0].solicitacoes;
+
+				if (!solicitacoes) solicitacoes = [];
+
+				if (solicitacoes.length === 0) {
+					res.json([]);
+					return;
+				}
+
+				const query = solicitacoes.map(function(solicitacao){
+					return {'_id': new ObjectId(solicitacao)};
+				});
+
+				usuarios.find(
+					{ $or: query }
+				).toArray((err, docs) => {
+					res.json(docs);
+				});
+
+			});
+		});
+	} else {
+		res.json([]);
+	}
+});
+
+app.get('/aceitar/:id', (req, res) => {
+	if (req.session.user) {
+		mongoClient.connect(MONGODB_URI, (err, db) => {
+			const usuarios = db.collection('usuarios');
+			usuarios.find({'_id': new ObjectId(req.session.user.id)}).toArray((err, docs) => {
+				let solicitacoes = docs[0].solicitacoes;
+				let amigos = docs[0].amigos;
+				if (!solicitacoes) solicitacoes = [];
+				if (!amigos) amigos = [];
+
+				const index = solicitacoes.indexOf(req.params.id);
+				solicitacoes.splice(index, 1);
+
+				amigos.push(req.params.id);
+
+				const valueToUpdate = {'solicitacoes': solicitacoes, 'amigos': amigos};
+
+				usuarios.updateOne({'_id': new ObjectId(docs[0]._id)},
+				{$set: valueToUpdate}, (err, results) => {
+					db.close();
+
+					// TODO: Pegar os amigos do outro usuário
+					usuarios.updateOne({'_id': new ObjectId(req.params.id)},
+					{$set: {'amigos': amigos}}, (err, results) => {
+						res.json(valueToUpdate);
+					});
+				});				
+			});	
+		});
+	} else {
+		res.json({});
+	}
+});
+
 app.listen(3000, () => console.log('Aplicação escutando na porta 3000!'));

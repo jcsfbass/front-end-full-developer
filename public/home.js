@@ -12,10 +12,13 @@ new Vue({
 			});		
 		},
 		solicitar: function(pessoa) {
-			//this.$http.get('/solicitar/' + pessoa._id).then(function(response){
-				
-			//});
-			console.log(pessoa);	
+			this.$http.get('/solicitar/' + pessoa._id).then(function(response){});
+		},
+		aceitar: function(pessoa) {
+			this.$http.get('/aceitar/' + pessoa._id).then(function(response){
+				var index = this.solicitacoes.indexOf(pessoa);
+				this.solicitacoes.splice(index, 1);
+			});
 		}
 	},
 	ready: function() {
@@ -32,6 +35,7 @@ new Vue({
 		});
 
 		this.$http.get('/solicitacoes').then(function(response){
+			console.dir(response);
 			this.$set('solicitacoes', response.data);
 		});
 	}
