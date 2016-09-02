@@ -35,7 +35,6 @@ new Vue({
 		});
 
 		this.$http.get('/solicitacoes').then(function(response){
-			console.dir(response);
 			this.$set('solicitacoes', response.data);
 		});
 	}

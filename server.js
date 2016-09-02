@@ -134,9 +134,25 @@ app.get('/pessoas', (req, res) => {
 			usuarios.find({}).toArray((err, docs) => {
 				db.close();
 
-				res.json(docs.filter(function(doc){
-					return doc._id != req.session.user.id;
-				}));
+				const user = docs.find(doc => {
+					return doc._id == req.session.user.id;
+				});
+
+				let amigos = user.amigos;
+				if (!amigos) amigos = [];
+
+				const known = amigos.concat(req.session.user.id);
+
+				const nonKnown = [];
+				docs.forEach(doc => {
+					const some = known.some(user => {
+						return doc._id == user;
+					});
+
+					if (!some) nonKnown.push(doc);
+				});
+
+				res.json(nonKnown);
 			});
 		});
 	} else {
@@ -180,8 +196,39 @@ app.get('/solicitacoes', function(req, res) {
 					return;
 				}
 
-				const query = solicitacoes.map(function(solicitacao){
+				const query = solicitacoes.map(solicitacao => {
 					return {'_id': new ObjectId(solicitacao)};
+				});
+
+				usuarios.find(
+					{ $or: query }
+				).toArray((err, docs) => {
+					res.json(docs);
+				});
+
+			});
+		});
+	} else {
+		res.json([]);
+	}
+});
+
+app.get('/amigos', function(req, res) {
+	if (req.session.user) {
+		mongoClient.connect(MONGODB_URI, (err, db) => {
+			const usuarios = db.collection('usuarios');
+			usuarios.find({'_id': new ObjectId(req.session.user.id)}).toArray((err, docs) => {
+				let amigos = docs[0].amigos;
+
+				if (!amigos) amigos = [];
+
+				if (amigos.length === 0) {
+					res.json([]);
+					return;
+				}
+
+				const query = amigos.map(amigo => {
+					return {'_id': new ObjectId(amigo)};
 				});
 
 				usuarios.find(
@@ -207,21 +254,34 @@ app.get('/aceitar/:id', (req, res) => {
 				if (!solicitacoes) solicitacoes = [];
 				if (!amigos) amigos = [];
 
-				const index = solicitacoes.indexOf(req.params.id);
+				let index = solicitacoes.indexOf(req.params.id);
 				solicitacoes.splice(index, 1);
 
 				amigos.push(req.params.id);
 
-				const valueToUpdate = {'solicitacoes': solicitacoes, 'amigos': amigos};
+				let valueToUpdate = {'solicitacoes': solicitacoes, 'amigos': amigos};
 
 				usuarios.updateOne({'_id': new ObjectId(docs[0]._id)},
 				{$set: valueToUpdate}, (err, results) => {
-					db.close();
 
-					// TODO: Pegar os amigos do outro usuário
-					usuarios.updateOne({'_id': new ObjectId(req.params.id)},
-					{$set: {'amigos': amigos}}, (err, results) => {
-						res.json(valueToUpdate);
+					usuarios.find({'_id': new ObjectId(req.params.id)}).toArray((err, docs) => {
+						let solicitacoes = docs[0].solicitacoes;
+						let amigos = docs[0].amigos;
+						if (!solicitacoes) solicitacoes = [];
+						if (!amigos) amigos = [];
+
+						let index = solicitacoes.indexOf(req.params.id);
+						if (index != -1) solicitacoes.splice(index, 1);
+
+						amigos.push(req.session.user.id);
+
+						let valueToUpdate = {'solicitacoes': solicitacoes, 'amigos': amigos};
+
+						usuarios.updateOne({'_id': new ObjectId(req.params.id)},
+						{$set: valueToUpdate}, (err, results) => {
+							res.json(valueToUpdate);
+							db.close();
+						});
 					});
 				});				
 			});	
