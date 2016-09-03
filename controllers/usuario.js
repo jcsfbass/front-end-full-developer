@@ -95,6 +95,41 @@ const UsuarioController = {
 		} else {
 			res.json([]);
 		}
+	},
+	postagens: (req, res) => {
+		if (req.session.user) {
+			mongoClient.connect(MONGODB_URI, (err, db) => {
+				const usuarios = db.collection('usuarios');
+				usuarios.find({'_id': new ObjectId(req.session.user.id)}).toArray((err, docs) => {
+					db.close();
+
+					res.json(docs[0].posts);
+				});
+			});
+		} else {
+			res.json([]);
+		}
+	},
+	createPostagem: (req, res) => {
+		mongoClient.connect(MONGODB_URI, (err, db) => {
+			const usuarios = db.collection('usuarios');
+			usuarios.find({'_id': new ObjectId(req.session.user.id)}).toArray((err, docs) => {
+				const posts = docs[0].posts;
+				const post = {
+					texto: req.body.texto,
+					data: new Date()
+				};
+
+				posts.unshift(post);
+
+				usuarios.updateOne({'_id': new ObjectId(docs[0]._id)},
+				{$set: {'posts': posts}}, (err, results) => {
+					db.close();
+
+					res.json(post);
+				});
+			});
+		});
 	}
 };
 
