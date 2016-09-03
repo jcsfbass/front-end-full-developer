@@ -32,10 +32,11 @@ app.use(bodyParser.json());
 app.get('/', (req, res) => HomeController.home(req, res));
 
 app.post('/login', (req, res) => LoginController.login(req, res));
-
 app.get('/logout', (req, res) => LoginController.logout(req, res));
 
 app.post('/cadastrar', multiparty(), (req, res) => UsuarioController.create(req, res));
+app.get('/solicitacoes', (req, res) => UsuarioController.solicitacoes(req, res));
+app.get('/amigos', (req, res) => UsuarioController.amigos(req, res));
 
 app.post('/postagens', (req, res) => {
 	mongoClient.connect(MONGODB_URI, (err, db) => {
@@ -124,39 +125,6 @@ app.get('/solicitar/:id', function(req, res) {
 				});
 			});
 		});	
-	} else {
-		res.json([]);
-	}
-});
-
-app.get('/solicitacoes', (req, res) => UsuarioController.solicitacoes(req, res));
-
-app.get('/amigos', function(req, res) {
-	if (req.session.user) {
-		mongoClient.connect(MONGODB_URI, (err, db) => {
-			const usuarios = db.collection('usuarios');
-			usuarios.find({'_id': new ObjectId(req.session.user.id)}).toArray((err, docs) => {
-				let amigos = docs[0].amigos;
-
-				if (!amigos) amigos = [];
-
-				if (amigos.length === 0) {
-					res.json([]);
-					return;
-				}
-
-				const query = amigos.map(amigo => {
-					return {'_id': new ObjectId(amigo)};
-				});
-
-				usuarios.find(
-					{ $or: query }
-				).toArray((err, docs) => {
-					res.json(docs);
-				});
-
-			});
-		});
 	} else {
 		res.json([]);
 	}

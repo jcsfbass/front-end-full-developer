@@ -45,15 +45,33 @@ const UsuarioController = {
 						return {'_id': new ObjectId(solicitacao)};
 					});
 
-					usuarios.find({$or: query}).toArray((err, docs) => {
-						res.json(docs);
-					});
-
+					usuarios.find({$or: query}).toArray((err, docs) => res.json(docs));
 				});
 			});
-		} else {
-			res.json([]);
-		}
+		} else res.json([]);
+	},
+	amigos: (req, res) => {
+		if (req.session.user) {
+			mongoClient.connect(MONGODB_URI, (err, db) => {
+				const usuarios = db.collection('usuarios');
+				usuarios.find({'_id': new ObjectId(req.session.user.id)}).toArray((err, docs) => {
+					let amigos = docs[0].amigos;
+
+					if (!amigos) amigos = [];
+
+					if (amigos.length === 0) {
+						res.json([]);
+						return;
+					}
+
+					const query = amigos.map(amigo => {
+						return {'_id': new ObjectId(amigo)};
+					});
+
+					usuarios.find({$or: query}).toArray((err, docs) => res.json(docs));
+				});
+			});
+		} else res.json([]);
 	}
 };
 

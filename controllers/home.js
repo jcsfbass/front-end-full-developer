@@ -17,9 +17,7 @@ const HomeController = {
 					});
 				});
 			});
-		} else {
-			res.render('cadastro-login');
-		}
+		} else res.render('cadastro-login');
 	}
 };
 
