@@ -11,6 +11,7 @@ const ObjectId = mongodb.ObjectId;
 
 const HomeController = require('./controllers/home');
 const LoginController = require('./controllers/login');
+const UsuarioController = require('./controllers/usuario');
 
 const MONGODB_URI = 'mongodb://localhost:27017/jedi';
 
@@ -28,38 +29,13 @@ app.use(session({
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-app.get('/', (req, res) => {
-	HomeController.home(req, res);
-});
+app.get('/', (req, res) => HomeController.home(req, res));
 
-app.post('/login', (req, res) => {
-	LoginController.login(req, res);
-});
+app.post('/login', (req, res) => LoginController.login(req, res));
 
-app.get('/logout', (req, res) => {
-	LoginController.logout(req, res);
-});
+app.get('/logout', (req, res) => LoginController.logout(req, res));
 
-app.post('/cadastrar', multiparty(), (req, res) => {
-	mongoClient.connect(MONGODB_URI, (err, db) => {
-		const usuarios = db.collection('usuarios');
-
-		const usuario = req.body;
-		usuario.posts = [];
-
-		usuarios.insertOne(usuario, (err, result) => {
-			db.close();
-
-			req.session.user = {id: result.ops[0]._id};
-
-			fs.readFile(req.files.foto.path, (err, data) => {
-				fs.writeFile(path.join(__dirname, `public/images/profile/${req.session.user.id}.jpg`), data);
-			});
-
-			res.redirect('/');
-		});
-	});
-});
+app.post('/cadastrar', multiparty(), (req, res) => UsuarioController.create(req, res));
 
 app.post('/postagens', (req, res) => {
 	mongoClient.connect(MONGODB_URI, (err, db) => {

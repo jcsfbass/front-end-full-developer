@@ -1,5 +1,4 @@
-const mongodb = require('mongodb');
-const mongoClient = mongodb.MongoClient;
+const mongoClient = require('mongodb').MongoClient;
 
 const MONGODB_URI = 'mongodb://localhost:27017/jedi';
 
