@@ -14,7 +14,7 @@ const LoginController = {
 				'senha': senha
 			}).toArray((err, docs) => {
 				if (docs.length === 0) {
-					res.render('home', {nome: 'Usuário não cadastrado'});	
+					res.send('Usuário não cadastrado');	
 				} else {
 					req.session.user = {id: docs[0]._id};
 					res.redirect('/');				

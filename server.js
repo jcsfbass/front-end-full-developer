@@ -37,6 +37,7 @@ app.get('/logout', (req, res) => LoginController.logout(req, res));
 app.post('/cadastrar', multiparty(), (req, res) => UsuarioController.create(req, res));
 app.get('/solicitacoes', (req, res) => UsuarioController.solicitacoes(req, res));
 app.get('/amigos', (req, res) => UsuarioController.amigos(req, res));
+app.get('/pessoas', (req, res) => UsuarioController.pessoas(req, res));
 
 app.post('/postagens', (req, res) => {
 	mongoClient.connect(MONGODB_URI, (err, db) => {
@@ -68,39 +69,6 @@ app.get('/postagens', (req, res) => {
 				db.close();
 
 				res.json(docs[0].posts);
-			});
-		});
-	} else {
-		res.json([]);
-	}
-});
-
-app.get('/pessoas', (req, res) => {
-	if (req.session.user) {
-		mongoClient.connect(MONGODB_URI, (err, db) => {
-			const usuarios = db.collection('usuarios');
-			usuarios.find({}).toArray((err, docs) => {
-				db.close();
-
-				const user = docs.find(doc => {
-					return doc._id == req.session.user.id;
-				});
-
-				let amigos = user.amigos;
-				if (!amigos) amigos = [];
-
-				const known = amigos.concat(req.session.user.id);
-
-				const nonKnown = [];
-				docs.forEach(doc => {
-					const some = known.some(user => {
-						return doc._id == user;
-					});
-
-					if (!some) nonKnown.push(doc);
-				});
-
-				res.json(nonKnown);
 			});
 		});
 	} else {

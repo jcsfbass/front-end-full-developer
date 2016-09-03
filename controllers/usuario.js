@@ -12,7 +12,7 @@ const UsuarioController = {
 			const usuarios = db.collection('usuarios');
 
 			const usuario = req.body;
-			usuario.posts = [];
+			usuario.posts = usuario.solicitacoes = usuario.amigos =[];
 
 			usuarios.insertOne(usuario, (err, result) => {
 				db.close();
@@ -33,8 +33,6 @@ const UsuarioController = {
 				const usuarios = db.collection('usuarios');
 				usuarios.find({'_id': new ObjectId(req.session.user.id)}).toArray((err, docs) => {
 					let solicitacoes = docs[0].solicitacoes;
-
-					if (!solicitacoes) solicitacoes = [];
 
 					if (solicitacoes.length === 0) {
 						res.json([]);
@@ -57,8 +55,6 @@ const UsuarioController = {
 				usuarios.find({'_id': new ObjectId(req.session.user.id)}).toArray((err, docs) => {
 					let amigos = docs[0].amigos;
 
-					if (!amigos) amigos = [];
-
 					if (amigos.length === 0) {
 						res.json([]);
 						return;
@@ -72,6 +68,33 @@ const UsuarioController = {
 				});
 			});
 		} else res.json([]);
+	},
+	pessoas: (req, res) => {
+		if (req.session.user) {
+			mongoClient.connect(MONGODB_URI, (err, db) => {
+				const usuarios = db.collection('usuarios');
+				usuarios.find({}).toArray((err, docs) => {
+					db.close();
+
+					const user = docs.find(doc => doc._id == req.session.user.id);
+
+					let amigos = user.amigos;
+
+					const known = amigos.concat(req.session.user.id);
+
+					const unknown = [];
+					docs.forEach(doc => {
+						const some = known.some(userId => doc._id == userId);
+
+						if (!some) unknown.push(doc);
+					});
+
+					res.json(unknown);
+				});
+			});
+		} else {
+			res.json([]);
+		}
 	}
 };
 
