@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
-const mongoClient = require('mongodb').MongoClient;
+const mongodb = require('mongodb');
+const mongoClient = mongodb.MongoClient;
+const ObjectId = mongodb.ObjectId;
 
 const MONGODB_URI = 'mongodb://localhost:27017/jedi';
 
@@ -24,6 +26,34 @@ const UsuarioController = {
 				res.redirect('/');
 			});
 		});
+	},
+	solicitacoes: (req, res) => {
+		if (req.session.user) {
+			mongoClient.connect(MONGODB_URI, (err, db) => {
+				const usuarios = db.collection('usuarios');
+				usuarios.find({'_id': new ObjectId(req.session.user.id)}).toArray((err, docs) => {
+					let solicitacoes = docs[0].solicitacoes;
+
+					if (!solicitacoes) solicitacoes = [];
+
+					if (solicitacoes.length === 0) {
+						res.json([]);
+						return;
+					}
+
+					const query = solicitacoes.map(solicitacao => {
+						return {'_id': new ObjectId(solicitacao)};
+					});
+
+					usuarios.find({$or: query}).toArray((err, docs) => {
+						res.json(docs);
+					});
+
+				});
+			});
+		} else {
+			res.json([]);
+		}
 	}
 };
 
