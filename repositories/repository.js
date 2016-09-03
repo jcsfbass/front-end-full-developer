@@ -14,12 +14,14 @@ class Repository {
 		});
 	}
 
-	findOne(id, callback) {
+	where(query, callback) {
 		this.connect(collection => {
-			collection.find({'_id': new ObjectId(id)}).toArray((err, docs) => {
-				callback(docs[0]);
-			});
+			collection.find(query).toArray((err, docs) => callback(docs));
 		});
+	}
+
+	findOne(id, callback) {
+		this.where({'_id': new ObjectId(id)}, docs => callback(docs[0]));
 	}
 }
 
