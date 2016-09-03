@@ -5,15 +5,11 @@ const fs = require('fs');
 const bodyParser = require('body-parser');
 const multiparty = require('connect-multiparty');
 const session = require('express-session');
-const mongodb = require('mongodb');
-const mongoClient = mongodb.MongoClient;
-const ObjectId = mongodb.ObjectId;
 
 const HomeController = require('./controllers/home');
 const LoginController = require('./controllers/login');
 const UsuarioController = require('./controllers/usuario');
-
-const MONGODB_URI = 'mongodb://localhost:27017/jedi';
+const ChatController = require('./controllers/chat');
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -44,5 +40,9 @@ app.post('/postagens', (req, res) => UsuarioController.createPostagem(req, res))
 
 app.get('/solicitar/:id', (req, res) => UsuarioController.solicitar(req, res));
 app.get('/aceitar/:id', (req, res) => UsuarioController.aceitar(req, res));
+
+app.get('/conversar/:id', (req, res) => ChatController.chat(req, res));
+app.post('/mensagens/:id', (req, res) => ChatController.addMensagem(req, res));
+app.get('/mensagens/:id', (req, res) => ChatController.mensagens(req, res));
 
 app.listen(3000, () => console.log('Aplicação escutando na porta 3000!'));

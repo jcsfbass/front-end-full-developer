@@ -5,6 +5,8 @@ class UsuarioRepository extends Repository {
 		super(mongoURI);
 		this.collectionName = 'usuarios';
 	}
+
+	
 }
 
 module.exports = UsuarioRepository;
