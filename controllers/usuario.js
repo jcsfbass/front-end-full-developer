@@ -130,6 +130,70 @@ const UsuarioController = {
 				});
 			});
 		});
+	},
+	solicitar: (req, res) => {
+		if (req.session.user) {
+			mongoClient.connect(MONGODB_URI, (err, db) => {
+				const usuarios = db.collection('usuarios');
+				usuarios.find({'_id': new ObjectId(req.params.id)}).toArray((err, docs) => {
+					let solicitacoes = docs[0].solicitacoes;
+					solicitacoes.push(req.session.user.id);
+
+					usuarios.updateOne({'_id': new ObjectId(docs[0]._id)},
+					{$set: {'solicitacoes': solicitacoes}}, (err, results) => {
+						db.close();
+
+						res.json(solicitacoes);
+					});
+				});
+			});	
+		} else {
+			res.json([]);
+		}
+	},
+	aceitar: (req, res) => {
+		if (req.session.user) {
+			mongoClient.connect(MONGODB_URI, (err, db) => {
+				const usuarios = db.collection('usuarios');
+				usuarios.find({'_id': new ObjectId(req.session.user.id)}).toArray((err, docs) => {
+					let solicitacoes = docs[0].solicitacoes;
+					let amigos = docs[0].amigos;
+
+					let solicitacoesSet = new Set(solicitacoes);
+					solicitacoesSet.delete(req.params.id);
+					solicitacoes = Array.from(solicitacoesSet);
+
+					amigos.push(req.params.id);
+
+					let valueToUpdate = {'solicitacoes': solicitacoes, 'amigos': amigos};
+
+					usuarios.updateOne({'_id': new ObjectId(docs[0]._id)},
+					{$set: valueToUpdate}, (err, results) => {
+
+						usuarios.find({'_id': new ObjectId(req.params.id)}).toArray((err, docs) => {
+							let solicitacoes = docs[0].solicitacoes;
+							let amigos = docs[0].amigos;
+
+							let solicitacoesSet = new Set(solicitacoes);
+							solicitacoesSet.delete(req.params.id);
+							solicitacoes = Array.from(solicitacoesSet);
+
+							amigos.push(req.session.user.id);
+
+							let valueToUpdate = {'solicitacoes': solicitacoes, 'amigos': amigos};
+
+							usuarios.updateOne({'_id': new ObjectId(req.params.id)},
+							{$set: valueToUpdate}, (err, results) => {
+								res.json(valueToUpdate);
+								db.close();
+							});
+						});
+					});				
+				});	
+			});
+		} else {
+			res.json({});
+		}
 	}
 };
 

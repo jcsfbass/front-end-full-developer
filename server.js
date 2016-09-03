@@ -42,73 +42,7 @@ app.get('/pessoas', (req, res) => UsuarioController.pessoas(req, res));
 app.get('/postagens', (req, res) => UsuarioController.postagens(req, res));
 app.post('/postagens', (req, res) => UsuarioController.createPostagem(req, res));
 
-app.get('/solicitar/:id', function(req, res) {
-	if (req.session.user) {
-		mongoClient.connect(MONGODB_URI, (err, db) => {
-			const usuarios = db.collection('usuarios');
-			usuarios.find({'_id': new ObjectId(req.params.id)}).toArray((err, docs) => {
-				let solicitacoes = docs[0].solicitacoes;
-				if (!solicitacoes) solicitacoes = []; 
-				solicitacoes.push(req.session.user.id);
-
-				usuarios.updateOne({'_id': new ObjectId(docs[0]._id)},
-				{$set: {'solicitacoes': solicitacoes}}, (err, results) => {
-					db.close();
-
-					res.json(solicitacoes);
-				});
-			});
-		});	
-	} else {
-		res.json([]);
-	}
-});
-
-app.get('/aceitar/:id', (req, res) => {
-	if (req.session.user) {
-		mongoClient.connect(MONGODB_URI, (err, db) => {
-			const usuarios = db.collection('usuarios');
-			usuarios.find({'_id': new ObjectId(req.session.user.id)}).toArray((err, docs) => {
-				let solicitacoes = docs[0].solicitacoes;
-				let amigos = docs[0].amigos;
-				if (!solicitacoes) solicitacoes = [];
-				if (!amigos) amigos = [];
-
-				let index = solicitacoes.indexOf(req.params.id);
-				solicitacoes.splice(index, 1);
-
-				amigos.push(req.params.id);
-
-				let valueToUpdate = {'solicitacoes': solicitacoes, 'amigos': amigos};
-
-				usuarios.updateOne({'_id': new ObjectId(docs[0]._id)},
-				{$set: valueToUpdate}, (err, results) => {
-
-					usuarios.find({'_id': new ObjectId(req.params.id)}).toArray((err, docs) => {
-						let solicitacoes = docs[0].solicitacoes;
-						let amigos = docs[0].amigos;
-						if (!solicitacoes) solicitacoes = [];
-						if (!amigos) amigos = [];
-
-						let index = solicitacoes.indexOf(req.params.id);
-						if (index != -1) solicitacoes.splice(index, 1);
-
-						amigos.push(req.session.user.id);
-
-						let valueToUpdate = {'solicitacoes': solicitacoes, 'amigos': amigos};
-
-						usuarios.updateOne({'_id': new ObjectId(req.params.id)},
-						{$set: valueToUpdate}, (err, results) => {
-							res.json(valueToUpdate);
-							db.close();
-						});
-					});
-				});				
-			});	
-		});
-	} else {
-		res.json({});
-	}
-});
+app.get('/solicitar/:id', (req, res) => UsuarioController.solicitar(req, res));
+app.get('/aceitar/:id', (req, res) => UsuarioController.aceitar(req, res));
 
 app.listen(3000, () => console.log('Aplicação escutando na porta 3000!'));
