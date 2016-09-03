@@ -10,6 +10,7 @@ const mongoClient = mongodb.MongoClient;
 const ObjectId = mongodb.ObjectId;
 
 const HomeController = require('./controllers/home');
+const LoginController = require('./controllers/login');
 
 const MONGODB_URI = 'mongodb://localhost:27017/jedi';
 
@@ -32,30 +33,11 @@ app.get('/', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-	const email = req.body.email;
-	const senha = req.body.senha;
-
-	mongoClient.connect(MONGODB_URI, (err, db) => {
-		const usuarios = db.collection('usuarios');
-		usuarios.find({
-			'email': email,
-			'senha': senha
-		}).toArray((err, docs) => {
-			if (docs.length === 0) {
-				res.render('home', {nome: 'Usuário não cadastrado'});	
-			} else {
-				req.session.user = {id: docs[0]._id};
-				res.redirect('/');				
-			}
-
-			db.close();
-		});
-	});
+	LoginController.login(req, res);
 });
 
 app.get('/logout', (req, res) => {
-	delete req.session.user;
-	res.redirect('/');
+	LoginController.logout(req, res);
 });
 
 app.post('/cadastrar', multiparty(), (req, res) => {
