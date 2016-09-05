@@ -36,6 +36,15 @@ class UsuarioRepository extends Repository {
 		this.findOne(id, usuario => callback(usuario.posts));
 	}
 
+	createPostagem(id, texto, callback) {
+		this.postagens(id, postagens => {
+			const postagem = {texto: texto, data: new Date()};
+			postagens.unshift(postagem);
+
+			this.update(id, {'posts': postagens}, () => callback(postagem));
+		});
+	}
+
 	usuarios(id, field, callback) {
 		this.findOne(id, usuario => {
 			if (usuario[field].length === 0) {

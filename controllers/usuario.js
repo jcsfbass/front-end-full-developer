@@ -56,25 +56,11 @@ const UsuarioController = {
 		} else res.json([]);
 	},
 	createPostagem: (req, res) => {
-		mongoClient.connect(MONGODB_URI, (err, db) => {
-			const usuarios = db.collection('usuarios');
-			usuarios.find({'_id': new ObjectId(req.session.user.id)}).toArray((err, docs) => {
-				const posts = docs[0].posts;
-				const post = {
-					texto: req.body.texto,
-					data: new Date()
-				};
-
-				posts.unshift(post);
-
-				usuarios.updateOne({'_id': new ObjectId(docs[0]._id)},
-				{$set: {'posts': posts}}, (err, results) => {
-					db.close();
-
-					res.json(post);
-				});
+		if (req.session.user) {
+			usuarioRepository.createPostagem(req.session.user.id, req.body.texto, postagem => {
+				res.json(postagem);
 			});
-		});
+		} else res.json([]);
 	},
 	solicitar: (req, res) => {
 		if (req.session.user) {
