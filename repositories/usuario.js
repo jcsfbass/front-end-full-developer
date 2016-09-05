@@ -32,6 +32,10 @@ class UsuarioRepository extends Repository {
 		});
 	}
 
+	postagens(id, callback) {
+		this.findOne(id, usuario => callback(usuario.posts));
+	}
+
 	usuarios(id, field, callback) {
 		this.findOne(id, usuario => {
 			if (usuario[field].length === 0) {
