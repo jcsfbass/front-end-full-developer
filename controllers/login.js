@@ -6,11 +6,11 @@ const LoginController = {
 		usuarioRepository.where({
 			'email': req.body.email,
 			'senha': req.body.senha
-		}, docs => {
-			if (docs.length === 0) res.send('Usuário não cadastrado');
+		}, usuarios => {
+			if (usuarios.length === 0) res.send('Usuário não cadastrado');
 			else {
-				req.session.user = {id: docs[0]._id};
-				res.redirect('/');				
+				req.session.user = {id: usuarios[0]._id};
+				res.redirect('/');
 			}
 		});
 	},

@@ -6,22 +6,22 @@ const ObjectId = mongodb.ObjectId;
 
 const MONGODB_URI = 'mongodb://localhost:27017/jedi';
 
+const UsuarioRepository = require('../repositories/usuario');
+const usuarioRepository = new UsuarioRepository('mongodb://localhost:27017/jedi');
+
 const UsuarioController = {
 	create: (req, res) => {
-		mongoClient.connect(MONGODB_URI, (err, db) => {
-			const usuarios = db.collection('usuarios');
+		const usuario = req.body;
+		usuario.posts = usuario.solicitacoes = usuario.amigos = [];
 
-			const usuario = req.body;
-			usuario.posts = usuario.solicitacoes = usuario.amigos =[];
+		usuarioRepository.create(usuario, doc => {
+			req.session.user = {id: doc._id};
 
-			usuarios.insertOne(usuario, (err, result) => {
-				db.close();
-
-				req.session.user = {id: result.ops[0]._id};
-
-				fs.readFile(req.files.foto.path, (err, data) => {
-					fs.writeFile(path.join(__dirname, `../public/images/profile/${req.session.user.id}.jpg`), data);
-				});
+			fs.readFile(req.files.foto.path, (err, data) => {
+				fs.writeFile(
+					path.join(__dirname, `../public/images/profile/${doc._id}.jpg`),
+					data
+				);
 
 				res.redirect('/');
 			});
@@ -29,22 +29,8 @@ const UsuarioController = {
 	},
 	solicitacoes: (req, res) => {
 		if (req.session.user) {
-			mongoClient.connect(MONGODB_URI, (err, db) => {
-				const usuarios = db.collection('usuarios');
-				usuarios.find({'_id': new ObjectId(req.session.user.id)}).toArray((err, docs) => {
-					let solicitacoes = docs[0].solicitacoes;
-
-					if (solicitacoes.length === 0) {
-						res.json([]);
-						return;
-					}
-
-					const query = solicitacoes.map(solicitacao => {
-						return {'_id': new ObjectId(solicitacao)};
-					});
-
-					usuarios.find({$or: query}).toArray((err, docs) => res.json(docs));
-				});
+			usuarioRepository.solicitacoes(req.session.user.id, solicitacoes => {
+				res.json(solicitacoes);
 			});
 		} else res.json([]);
 	},
@@ -146,7 +132,7 @@ const UsuarioController = {
 						res.json(solicitacoes);
 					});
 				});
-			});	
+			});
 		} else {
 			res.json([]);
 		}
@@ -188,8 +174,8 @@ const UsuarioController = {
 								db.close();
 							});
 						});
-					});				
-				});	
+					});
+				});
 			});
 		} else {
 			res.json({});
