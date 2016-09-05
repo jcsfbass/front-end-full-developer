@@ -36,51 +36,17 @@ const UsuarioController = {
 	},
 	amigos: (req, res) => {
 		if (req.session.user) {
-			mongoClient.connect(MONGODB_URI, (err, db) => {
-				const usuarios = db.collection('usuarios');
-				usuarios.find({'_id': new ObjectId(req.session.user.id)}).toArray((err, docs) => {
-					let amigos = docs[0].amigos;
-
-					if (amigos.length === 0) {
-						res.json([]);
-						return;
-					}
-
-					const query = amigos.map(amigo => {
-						return {'_id': new ObjectId(amigo)};
-					});
-
-					usuarios.find({$or: query}).toArray((err, docs) => res.json(docs));
-				});
+			usuarioRepository.amigos(req.session.user.id, amigos => {
+				res.json(amigos);
 			});
 		} else res.json([]);
 	},
 	pessoas: (req, res) => {
 		if (req.session.user) {
-			mongoClient.connect(MONGODB_URI, (err, db) => {
-				const usuarios = db.collection('usuarios');
-				usuarios.find({}).toArray((err, docs) => {
-					db.close();
-
-					const user = docs.find(doc => doc._id == req.session.user.id);
-
-					let amigos = user.amigos;
-
-					const known = amigos.concat(req.session.user.id);
-
-					const unknown = [];
-					docs.forEach(doc => {
-						const some = known.some(userId => doc._id == userId);
-
-						if (!some) unknown.push(doc);
-					});
-
-					res.json(unknown);
-				});
+			usuarioRepository.pessoas(req.session.user.id, pessoas => {
+				res.json(pessoas);
 			});
-		} else {
-			res.json([]);
-		}
+		} else res.json([]);
 	},
 	postagens: (req, res) => {
 		if (req.session.user) {
