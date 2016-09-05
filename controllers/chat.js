@@ -15,7 +15,7 @@ const ChatController = {
 
 			for (let i = 0; i < chats.length; i++) {
 				let usuarios = new Set(chats[i].usuarios);
-				if (usuarios.has(currentUserId) && 
+				if (usuarios.has(currentUserId) &&
 					usuarios.has(friendUserId)) {
 
 					usuarioRepository.findOne(currentUserId, currentUser => {
@@ -42,7 +42,7 @@ const ChatController = {
 
 			for (let i = 0; i < chats.length; i++) {
 				let usuarios = new Set(chats[i].usuarios);
-				if (usuarios.has(currentUserId) && 
+				if (usuarios.has(currentUserId) &&
 					usuarios.has(friendUserId)) {
 					chat = chats[i];
 					break;
@@ -73,7 +73,7 @@ const ChatController = {
 				};
 
 				chatRepository.create(newChat, chat => res.json(chat));
-			} 
+			}
 		});
 	}
 }

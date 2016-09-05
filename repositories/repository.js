@@ -20,8 +20,29 @@ class Repository {
 		});
 	}
 
+	all(callback) {
+		this.where({}, callback);
+	}
+
 	findOne(id, callback) {
 		this.where({'_id': new ObjectId(id)}, docs => callback(docs[0]));
+	}
+
+	create(doc, callback) {
+		this.connect(collection => {
+			collection.insertOne(doc, (err, results) => {
+				callback(results.ops[0]);
+			});
+		});
+	}
+
+	update(id, valueToUpdate, callback) {
+		this.connect(collection => {
+			collection.updateOne({'_id': new ObjectId(id)},
+			{$set: valueToUpdate}, (err, results) => {
+				callback();
+			});
+		});
 	}
 }
 
