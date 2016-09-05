@@ -64,23 +64,10 @@ const UsuarioController = {
 	},
 	solicitar: (req, res) => {
 		if (req.session.user) {
-			mongoClient.connect(MONGODB_URI, (err, db) => {
-				const usuarios = db.collection('usuarios');
-				usuarios.find({'_id': new ObjectId(req.params.id)}).toArray((err, docs) => {
-					let solicitacoes = docs[0].solicitacoes;
-					solicitacoes.push(req.session.user.id);
-
-					usuarios.updateOne({'_id': new ObjectId(docs[0]._id)},
-					{$set: {'solicitacoes': solicitacoes}}, (err, results) => {
-						db.close();
-
-						res.json(solicitacoes);
-					});
-				});
+			usuarioRepository.addSolicitao(req.params.id, req.session.user.id, solicitacoes => {
+				res.json(solicitacoes);
 			});
-		} else {
-			res.json([]);
-		}
+		} else res.json([]);
 	},
 	aceitar: (req, res) => {
 		if (req.session.user) {

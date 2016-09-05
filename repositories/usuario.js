@@ -45,6 +45,14 @@ class UsuarioRepository extends Repository {
 		});
 	}
 
+	addSolicitao(id, unknownPessoa, callback) {
+		this.solicitacoes(id, solicitacoes => {
+			solicitacoes.push(unknownPessoa);
+
+			this.update(id, {'solicitacoes': solicitacoes}, callback);
+		});
+	}
+
 	usuarios(id, field, callback) {
 		this.findOne(id, usuario => {
 			if (usuario[field].length === 0) {
