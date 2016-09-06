@@ -53,6 +53,24 @@ class UsuarioRepository extends Repository {
 		});
 	}
 
+	addAmigo(id, amigoId, callback) {
+		this.findOne(id, usuario => {
+			const solicitacoes = new Set(usuario.solicitacoes);
+			const amigos = new Set(usuario.amigos);
+
+			solicitacoes.delete(amigoId);
+			amigos.add(amigoId);
+
+			this.update(id,
+				{
+					'solicitacoes': Array.from(solicitacoes),
+					'amigos': Array.from(amigos)
+				},
+				() => callback(amigos)
+			);
+		});
+	}
+
 	usuarios(id, field, callback) {
 		this.findOne(id, usuario => {
 			if (usuario[field].length === 0) {
