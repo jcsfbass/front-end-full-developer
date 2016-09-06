@@ -13,10 +13,14 @@ const ChatController = {
 			const currentUserId = req.session.user.id;
 			const friendUserId = req.params.id;
 
-			chatRepository.mensagens(currentUserId, friendUserId, mensagens => {
+			chatRepository.search(currentUserId, friendUserId, chat => {
 				usuarioRepository.findMany([currentUserId, friendUserId], usuarios => {
+					if (!chat) {
+						res.json([]);
+						return;
+					}
 
-					res.json(mensagens.map(mensagem => {
+					res.json(chat.mensagens.map(mensagem => {
 						mensagem.usuario = usuarios.find(usuario => usuario._id == mensagem.usuario).nome;
 						return mensagem;
 					}));
@@ -25,31 +29,14 @@ const ChatController = {
 		});
 	},
 	addMensagem: (req, res) => {
-		chatRepository.all(chats => {
-			let chat;
-			const currentUserId = req.session.user.id;
-			const friendUserId = req.params.id;
+		const currentUserId = req.session.user.id;
+		const friendUserId = req.params.id;
+		const texto = req.body.texto;
 
-			for (let i = 0; i < chats.length; i++) {
-				let usuarios = new Set(chats[i].usuarios);
-				if (usuarios.has(currentUserId) &&
-					usuarios.has(friendUserId)) {
-					chat = chats[i];
-					break;
-				}
-			}
-
-			if (chat) {
-				chat.mensagens.push({
-					usuario: req.session.user.id,
-					texto: req.body.texto
-				});
-
-				chatRepository.update(chat._id, {mensagens: chat.mensagens}, () => {
-					res.json({mensagens: chat.mensagens});
-				});
-			} else {
-				const newChat = {
+		chatRepository.search(currentUserId, friendUserId, chat => {
+			if (chat) chatRepository.addMensagem(currentUserId, chat, texto, () => res.json(chat));
+			else {
+				chatRepository.create({
 					usuarios: [
 						currentUserId,
 						friendUserId
@@ -57,12 +44,10 @@ const ChatController = {
 					mensagens: [
 						{
 							usuario: currentUserId,
-							texto: req.body.texto
+							texto: texto
 						}
 					]
-				};
-
-				chatRepository.create(newChat, chat => res.json(chat));
+				}, chat => res.json(chat));
 			}
 		});
 	}
