@@ -28,6 +28,11 @@ class Repository {
 		this.where({'_id': new ObjectId(id)}, docs => callback(docs[0]));
 	}
 
+	findMany(ids, callback) {
+		const query = ids.map(id => new Object({'_id': new ObjectId(id)}));
+		this.where({$or: query}, docs => callback(docs));
+	}
+
 	create(doc, callback) {
 		this.connect(collection => {
 			collection.insertOne(doc, (err, results) => {

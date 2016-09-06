@@ -13,25 +13,15 @@ const ChatController = {
 			const currentUserId = req.session.user.id;
 			const friendUserId = req.params.id;
 
-			for (let i = 0; i < chats.length; i++) {
-				let usuarios = new Set(chats[i].usuarios);
-				if (usuarios.has(currentUserId) &&
-					usuarios.has(friendUserId)) {
+			chatRepository.mensagens(currentUserId, friendUserId, mensagens => {
+				usuarioRepository.findMany([currentUserId, friendUserId], usuarios => {
 
-					usuarioRepository.findOne(currentUserId, currentUser => {
-						usuarioRepository.findOne(friendUserId, friendUser => {
-							const mensagens = chats[i].mensagens.map(mensagem => {
-								if (currentUserId == mensagem.usuario) mensagem.usuario = currentUser.nome;
-								else mensagem.usuario = friendUser.nome;
-
-								return mensagem;
-							});
-
-							res.json(mensagens);
-						});
-					});
-				}
-			}
+					res.json(mensagens.map(mensagem => {
+						mensagem.usuario = usuarios.find(usuario => usuario._id == mensagem.usuario).nome;
+						return mensagem;
+					}));
+				});
+			});
 		});
 	},
 	addMensagem: (req, res) => {

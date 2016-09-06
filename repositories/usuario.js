@@ -78,11 +78,7 @@ class UsuarioRepository extends Repository {
 				return;
 			}
 
-			const query = usuario[field].map(anotherUsuario => {
-				return {'_id': new ObjectId(anotherUsuario)};
-			});
-
-			this.where({$or: query}, usuarios => callback(usuarios));
+			this.findMany(usuario[field], usuarios => callback(usuarios));
 		});
 	}
 }
