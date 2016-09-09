@@ -23,55 +23,41 @@ const UsuarioController = {
 		});
 	},
 	solicitacoes: (req, res) => {
-		if (req.session.user) {
-			usuarioRepository.solicitacoes(req.session.user.id, solicitacoes => {
-				res.json(solicitacoes);
-			});
-		} else res.json([]);
+		usuarioRepository.solicitacoes(req.session.user.id, solicitacoes => {
+			res.json(solicitacoes);
+		});
 	},
 	amigos: (req, res) => {
-		if (req.session.user) {
-			usuarioRepository.amigos(req.session.user.id, amigos => {
-				res.json(amigos);
-			});
-		} else res.json([]);
+		usuarioRepository.amigos(req.session.user.id, amigos => {
+			res.json(amigos);
+		});
 	},
 	pessoas: (req, res) => {
-		if (req.session.user) {
-			usuarioRepository.pessoas(req.session.user.id, pessoas => {
-				res.json(pessoas);
-			});
-		} else res.json([]);
+		usuarioRepository.pessoas(req.session.user.id, pessoas => {
+			res.json(pessoas);
+		});
 	},
 	postagens: (req, res) => {
-		if (req.session.user) {
-			usuarioRepository.postagens(req.session.user.id, postagens => {
-				res.json(postagens);
-			});
-		} else res.json([]);
+		usuarioRepository.postagens(req.session.user.id, postagens => {
+			res.json(postagens);
+		});
 	},
 	createPostagem: (req, res) => {
-		if (req.session.user) {
-			usuarioRepository.createPostagem(req.session.user.id, req.body.texto, postagem => {
-				res.json(postagem);
-			});
-		} else res.json([]);
+		usuarioRepository.createPostagem(req.session.user.id, req.body.texto, postagem => {
+			res.json(postagem);
+		});
 	},
 	solicitar: (req, res) => {
-		if (req.session.user) {
-			usuarioRepository.addSolicitao(req.params.id, req.session.user.id, solicitacoes => {
-				res.json(solicitacoes);
-			});
-		} else res.json([]);
+		usuarioRepository.addSolicitao(req.params.id, req.session.user.id, solicitacoes => {
+			res.json(solicitacoes);
+		});
 	},
 	aceitar: (req, res) => {
-		if (req.session.user) {
-			usuarioRepository.addAmigo(req.params.id, req.session.user.id, amigosDoAmigo => {
-				usuarioRepository.addAmigo(req.session.user.id, req.params.id, amigos => {
-					res.json(amigos);
-				});
+		usuarioRepository.addAmigo(req.params.id, req.session.user.id, amigosDoAmigo => {
+			usuarioRepository.addAmigo(req.session.user.id, req.params.id, amigos => {
+				res.json(amigos);
 			});
-		} else res.json([]);
+		});
 	}
 };
 

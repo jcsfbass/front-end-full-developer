@@ -4,10 +4,7 @@ const ChatRepository = require('../repositories/chat');
 const chatRepository = new ChatRepository('mongodb://localhost:27017/jedi');
 
 const ChatController = {
-	chat: (req, res) => {
-		if (req.session.user) res.render('chat');
-		else res.redirect('/');
-	},
+	chat: (req, res) => res.render('chat'),
 	mensagens: (req, res) => {
 		chatRepository.all(chats => {
 			const currentUserId = req.session.user.id;
