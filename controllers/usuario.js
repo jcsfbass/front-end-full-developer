@@ -1,8 +1,7 @@
-const fs = require('fs');
-const path = require('path');
-
 const UsuarioRepository = require('../repositories/usuario');
 const usuarioRepository = new UsuarioRepository('mongodb://localhost:27017/jedi');
+
+const UploadService = require('../services/upload');
 
 const UsuarioController = {
 	create: (req, res) => {
@@ -12,14 +11,7 @@ const UsuarioController = {
 		usuarioRepository.create(usuario, doc => {
 			req.session.user = {id: doc._id};
 
-			fs.readFile(req.files.foto.path, (err, data) => {
-				fs.writeFile(
-					path.join(__dirname, `../public/images/profile/${doc._id}.jpg`),
-					data
-				);
-
-				res.redirect('/');
-			});
+			UploadService.uploadProfilePhoto(req.files.foto.path, doc._id, () => res.redirect('/'));
 		});
 	},
 	solicitacoes: (req, res) => {
