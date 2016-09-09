@@ -14,7 +14,7 @@
 
 		<aside>
 			<div>
-				<h2>Amigos</h2>
+				<h2 v-if="amigos.length > 0">Amigos</h2>
 				<div v-for="amigo in amigos">
 					<img src="images/profile/{{ amigo._id }}.jpg" alt="imagem do perfil">
 					<p>{{ amigo.nome }}</p>
@@ -26,7 +26,7 @@
 			</div>
 
 			<div>
-				<h2>Não amigos</h2>
+				<h2 v-if="pessoas.length > 0">Não amigos</h2>
 				<div v-for="pessoa in pessoas">
 					<img src="images/profile/{{ pessoa._id }}.jpg" alt="imagem do perfil">
 					<p>{{ pessoa.nome }}</p>
@@ -36,9 +36,9 @@
 						</button>
 				</div>
 			</div>
-	
+
 			<div>
-				<h2>Solicitações</h2>
+				<h2 v-if="solicitacoes.length > 0">Solicitações</h2>
 				<div v-for="solicitacao in solicitacoes">
 					<img src="images/profile/{{ solicitacao._id }}.jpg" alt="imagem do perfil">
 					<p>{{ solicitacao.nome }}</p>
