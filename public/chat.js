@@ -17,7 +17,7 @@ new Vue({
 			});
 		},
 		getId() {
-			return document.URL.split('/').slice(-1).pop();;
+			return document.URL.split('/').slice(-1).pop();
 		}
 	}
 });

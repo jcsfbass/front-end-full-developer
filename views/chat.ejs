@@ -3,13 +3,16 @@
 <head>
 	<meta charset="utf-8">
 	<title>Bate-papo</title>
+	<link rel="stylesheet" type="text/css" href="../estilo.css">
 </head>
 <body id="chat">
-	<div v-for="mensagem in mensagens">
-		<p>{{ mensagem.usuario }}</p>
-		<p>{{ mensagem.texto }}</p>
-	</div>
-	<textarea v-model="novaMensagem" v-on:keyup.enter="enviar"></textarea>
+	<main>
+		<div v-for="mensagem in mensagens" class="{{ mensagem.usuario }}">
+			<p>{{ mensagem.usuario }}</p>
+			<p>{{ mensagem.texto }}</p>
+		</div>
+		<textarea v-model="novaMensagem" placeholder="Nova mensagem" v-on:keyup.enter="enviar"></textarea>
+	</main>
 
 	<script src="../js/vue.min.js" type="text/javascript"></script>
 	<script src="../js/vue-resource.min.js" type="text/javascript"></script>

@@ -6,22 +6,20 @@ const chatRepository = new ChatRepository('mongodb://localhost:27017/jedi');
 const ChatController = {
 	chat: (req, res) => res.render('chat'),
 	mensagens: (req, res) => {
-		chatRepository.all(chats => {
-			const currentUserId = req.session.user.id;
-			const friendUserId = req.params.id;
+		const currentUserId = req.session.user.id;
+		const friendUserId = req.params.id;
 
-			chatRepository.search(currentUserId, friendUserId, chat => {
-				usuarioRepository.findMany([currentUserId, friendUserId], usuarios => {
-					if (!chat) {
-						res.json([]);
-						return;
-					}
-
-					res.json(chat.mensagens.map(mensagem => {
-						mensagem.usuario = usuarios.find(usuario => usuario._id == mensagem.usuario).nome;
-						return mensagem;
-					}));
-				});
+		chatRepository.search(currentUserId, friendUserId, chat => {
+			if (!chat) {
+				res.json([]);
+				return;
+			}
+			
+			usuarioRepository.findMany([currentUserId, friendUserId], usuarios => {
+				res.json(chat.mensagens.map(mensagem => {
+					mensagem.usuario = usuarios.find(usuario => usuario._id == mensagem.usuario).nome;
+					return mensagem;
+				}));
 			});
 		});
 	},
