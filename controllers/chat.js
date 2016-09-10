@@ -15,12 +15,7 @@ const ChatController = {
 				return;
 			}
 			
-			usuarioRepository.findMany([currentUserId, friendUserId], usuarios => {
-				res.json(chat.mensagens.map(mensagem => {
-					mensagem.usuario = usuarios.find(usuario => usuario._id == mensagem.usuario).nome;
-					return mensagem;
-				}));
-			});
+			ChatController.transformMensagens(chat, transformedChat => res.json(transformedChat.mensagens));
 		});
 	},
 	addMensagem: (req, res) => {
@@ -29,7 +24,11 @@ const ChatController = {
 		const texto = req.body.texto;
 
 		chatRepository.search(currentUserId, friendUserId, chat => {
-			if (chat) chatRepository.addMensagem(currentUserId, chat, texto, () => res.json(chat));
+			if (chat) {
+				chatRepository.addMensagem(currentUserId, chat, texto, newChat => {
+					ChatController.transformMensagens(newChat, transformedChat => res.json(transformedChat));
+				});
+			}
 			else {
 				chatRepository.create({
 					usuarios: [
@@ -42,8 +41,19 @@ const ChatController = {
 							texto: texto
 						}
 					]
-				}, chat => res.json(chat));
+				}, chat => {
+					ChatController.transformMensagens(chat, transformedChat => res.json(transformedChat));
+				});
 			}
+		});
+	},
+	transformMensagens: (chat, callback) => {
+		usuarioRepository.findMany(chat.usuarios, usuarios => {
+			chat.mensagens = chat.mensagens.map(mensagem => {
+				mensagem.usuario = usuarios.find(usuario => usuario._id == mensagem.usuario).nome;
+				return mensagem;
+			});
+			callback(chat);
 		});
 	}
 }
