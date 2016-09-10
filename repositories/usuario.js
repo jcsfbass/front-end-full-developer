@@ -33,15 +33,48 @@ class UsuarioRepository extends Repository {
 	}
 
 	postagens(id, callback) {
-		this.findOne(id, usuario => callback(usuario.posts));
+		this.findOne(id, usuario => {
+			this.findMany(usuario.amigos, amigos => {
+				let postagens = usuario.posts.map(post => {
+					post.id = usuario._id;
+					post.nome = usuario.nome;
+
+					return post;
+				});
+
+				amigos.forEach(amigo => {
+					let postagensDoAmigo = amigo.posts.map(post => {
+						post.id = amigo._id;
+						post.nome = amigo.nome;
+
+						return post;
+					});
+
+					postagens = postagens.concat(postagensDoAmigo);
+				});
+
+				callback(postagens.sort((current, next) => {
+				  if (current.data > next.data) return -1;
+				  if (current.data < next.data) return 1;
+
+				  return 0;
+				}));
+			});
+		});
 	}
 
 	createPostagem(id, texto, callback) {
-		this.postagens(id, postagens => {
+		this.findOne(id, usuario => {
 			const postagem = {texto: texto, data: new Date()};
+			const postagens = usuario.posts;
 			postagens.unshift(postagem);
 
-			this.update(id, {'posts': postagens}, () => callback(postagem));
+			this.update(id, {'posts': postagens}, () => {
+				postagem.id = usuario._id;
+				postagem.nome = usuario.nome;
+				
+				callback(postagem);
+			});		
 		});
 	}
 

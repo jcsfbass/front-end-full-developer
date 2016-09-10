@@ -16,7 +16,7 @@ class Repository {
 
 	where(query, callback) {
 		this.connect(collection => {
-			collection.find(query).toArray((err, docs) => callback(docs));
+			collection.find(query).toArray((err, docs) => callback(docs || []));
 		});
 	}
 

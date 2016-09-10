@@ -60,9 +60,9 @@
 
 			<section id="postagens">
 				<div v-for="postagem in postagens">
-					<img src="<%= imagem %>" alt="imagem do perfil">
+					<img src="images/profile/{{ postagem.id }}.jpg" alt="imagem do perfil">
 					<h3>
-						<%= nome %>
+						{{ postagem.nome }}
 						<br>
 						<time datetime="{{ postagem.data }}">{{ postagem.data }}</time>
 					</h3>
