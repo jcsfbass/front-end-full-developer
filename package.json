@@ -4,6 +4,9 @@
   "scripts": {
     "start": "node server.js"
   },
+  "engines": {
+    "node" : ">=6.2"
+  },
   "private": true,
   "dependencies": {
     "body-parser": "~1.15.2",
