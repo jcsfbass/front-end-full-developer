@@ -55,4 +55,4 @@ app.get('/conversar/:id', authenticatePage, (req, res) => ChatController.chat(re
 app.post('/mensagens/:id', authenticateRequest, (req, res) => ChatController.addMensagem(req, res));
 app.get('/mensagens/:id', authenticateRequest, (req, res) => ChatController.mensagens(req, res));
 
-app.listen(3000, () => console.log('Aplicação escutando na porta 3000!'));
+app.listen(process.env.PORT || 3000, () => console.log('Aplicação funcionando!'));
