@@ -12,12 +12,15 @@ new Vue({
 			});		
 		},
 		solicitar: function(pessoa) {
-			this.$http.get('/solicitar/' + pessoa._id).then(function(response){});
+			this.$http.get('/solicitar/' + pessoa._id).then(function(response){
+				var index = this.pessoas.indexOf(pessoa);
+				this.pessoas.splice(index, 1);
+			});
 		},
 		aceitar: function(pessoa) {
 			this.$http.get('/aceitar/' + pessoa._id).then(function(response){
 				var index = this.solicitacoes.indexOf(pessoa);
-				this.solicitacoes.splice(index, 1);
+				this.amigos.push(this.solicitacoes.splice(index, 1).pop());
 			});
 		}
 	},
