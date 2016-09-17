@@ -1,5 +1,6 @@
+const ConfigDatabase = require('../config/database');
 const UsuarioRepository = require('../repositories/usuario');
-const usuarioRepository = new UsuarioRepository('mongodb://localhost:27017/jedi');
+const usuarioRepository = new UsuarioRepository(ConfigDatabase.uri);
 
 const UploadService = require('../services/upload');
 

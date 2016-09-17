@@ -1,7 +1,8 @@
+const ConfigDatabase = require('../config/database');
 const UsuarioRepository = require('../repositories/usuario');
-const usuarioRepository = new UsuarioRepository('mongodb://localhost:27017/jedi');
+const usuarioRepository = new UsuarioRepository(ConfigDatabase.uri);
 const ChatRepository = require('../repositories/chat');
-const chatRepository = new ChatRepository('mongodb://localhost:27017/jedi');
+const chatRepository = new ChatRepository(ConfigDatabase.uri);
 
 const ChatController = {
 	chat: (req, res) => res.render('chat'),
