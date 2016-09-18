@@ -79,10 +79,11 @@ class UsuarioRepository extends Repository {
 	}
 
 	addSolicitao(id, unknownPessoa, callback) {
-		this.solicitacoes(id, solicitacoes => {
-			solicitacoes.push(unknownPessoa);
+		this.findOne(id, usuario => {
+			const solicitacoes = new Set(usuario.solicitacoes);
+			solicitacoes.add(unknownPessoa);
 
-			this.update(id, {'solicitacoes': solicitacoes}, callback);
+			this.update(id, {'solicitacoes': Array.from(solicitacoes)}, callback);
 		});
 	}
 
